@@ -53,6 +53,27 @@ router.get('/about', (req, res) => {
 
 
 
+router.get('/post/:id',async (req, res) => {
+    
+
+    try{
+
+        
+        let slug = req.params.id;
+        const data = await Post.findById(slug);
+        const locals = {
+            title: data.title,
+            description: 'Welcome to the home page'
+        };
+        res.render('post',{locals,data});
+    }catch(error){
+        console.log(error.message);
+    }
+});
+
+
+
+
 // router.get('/',async (req, res) => {
 //     const locals = {
 //         title: 'Home',
