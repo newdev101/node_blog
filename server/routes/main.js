@@ -54,11 +54,7 @@ router.get('/about', (req, res) => {
 
 
 router.get('/post/:id',async (req, res) => {
-    
-
-    try{
-
-        
+    try{ 
         let slug = req.params.id;
         const data = await Post.findById(slug);
         const locals = {
@@ -71,6 +67,34 @@ router.get('/post/:id',async (req, res) => {
     }
 });
 
+
+
+router.post('/search',async (req, res) => {
+    
+    try{
+        const locals = {
+            title: 'search',
+            description: 'Welcome to the home page'
+        };
+
+        let searchTerm = req.body.searchTerm;
+        searchTerm = searchTerm.replace(/[^a-zA-Z0-9]/g,"");
+        console.log(searchTerm);
+        const data = await Post.find({
+            $or: [
+                {title: {$regex: new RegExp(searchTerm, 'i')}},
+                {body: {$regex: new RegExp(searchTerm, 'i')}}
+            ]
+        });
+        res.render('search',{
+            locals,
+            data,
+        });
+    }catch(error){
+        console.log(error.message);
+    }
+
+});
 
 
 

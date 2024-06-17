@@ -11,7 +11,9 @@ const port = process.env.PORT || 5000;
 //%    Database connection
 connectDB();
 
-
+//%   Body parser
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 
 //%    Static files
