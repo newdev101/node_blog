@@ -1,12 +1,17 @@
-
+require('dotenv').config();
 const express = require('express');
 const expressLayouts = require('express-ejs-layouts');
 const routes = require('./server/routes/main.js');
 
+const connectDB = require('./server/config/db.js');
+
 const app = express();
 const port = process.env.PORT || 5000;
 
-require('dotenv').config();
+//%    Database connection
+connectDB();
+
+
 
 
 //%    Static files
