@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const expressLayouts = require('express-ejs-layouts');
+const methodOverride = require('method-override')
 const mainRoutes = require('./server/routes/main.js');
 const adminRoutes = require('./server/routes/admin.js')
 const cookieParser = require('cookie-parser');
@@ -19,6 +20,7 @@ connectDB();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
+app.use(methodOverride('_method'));
 
 app.use(session({
      secret: 'keyboard cat',

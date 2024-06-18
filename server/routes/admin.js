@@ -114,6 +114,69 @@ router.post('/add-post',authMiddleware,async (req,res)=>{
 })
 
 
+router.get('/edit-post/:id',authMiddleware,async (req,res)=>{
+   
+    try{
+        const locals = {
+            title: 'Edit Post',
+            description: "it's Edit post page"
+        };
+
+
+
+        const data=await Post.findOne({_id:req.params.id});
+        res.render('admin/edit-post',{
+            locals,
+            data,
+            layout:adminLayout
+        });
+
+    }catch(error){
+        console.log(error.message);
+    }
+})
+
+router.put('/edit-post/:id',authMiddleware,async (req,res)=>{
+    const locals = {
+        title: 'Edit Post',
+        description: "it's Edit post page"
+    };
+            console.log("new put request"+req.params.id);
+    try{
+        await Post.findByIdAndUpdate(req.params.id,{
+            title: req.body.title,
+            body: req.body.body,
+            updatedAt: Date.now()
+        })
+        console.log("edit successful");
+        res.redirect('/edit-post/'+req.params.id);
+
+    }catch(error){
+        console.log("edit failed");
+        console.log(error.message);
+    }
+})
+
+
+
+router.delete('/delete-post/:id',authMiddleware,async (req,res)=>{
+
+    try{
+        await Post.deleteOne({_id:req.params.id});
+        res.redirect('/dashboard/');
+
+    }catch(error){
+        console.log(error.message);
+    }
+})
+
+
+router.get('/logout',authMiddleware,async (req,res)=>{
+    res.clearCookie('token');
+    res.redirect('/admin');
+})
+
+
 router.post('/register',async (req, res) => {
    
     try{
