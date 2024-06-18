@@ -9,20 +9,22 @@ const jwt = require('jsonwebtoken')
 const adminLayout = '../views/layouts/admin';
 
 
-//!         Middleware
+//! Middleware
+
 const authMiddleware = (req, res, next)=>{
     const token = req.cookies.token;
     if(!token){
         return res.status(401).json({message:'unauthorized'});
-        try{
+    }
+    try{
             const decoded = jwt.verify(token,process.env.JWT_SECRET);
             req.userId = decoded.userId;
             next();
-        }catch(error){
+    }catch(error){
             res.status(401).json({message:'unauthorized'});
-        }
     }
 }
+
 
 router.get('/admin',async (req, res) => {
     const locals = {
@@ -64,7 +66,51 @@ router.post('/admin',async (req, res) => {
 });
 
 router.get('/dashboard',authMiddleware,async (req,res)=>{
-    res.render('admin/dashboard');
+    const locals = {
+        title: 'Dashboard',
+        description: "it's Dashboard page"
+    };
+
+    try{
+        const data = await Post.find();
+        res.render('admin/dashboard',{locals, data, layout:adminLayout});
+    }catch(error){
+        console.log(error.message);
+    }
+})
+
+
+router.get('/add-post',authMiddleware,async (req,res)=>{
+    const locals = {
+        title: 'Add Post',
+        description: "it's Add post page"
+    };
+
+    try{
+        const data = await Post.find();
+        res.render('admin/add-post',{
+            locals, 
+            layout:adminLayout
+        });
+    }catch(error){
+        console.log(error.message);
+    }
+})
+
+
+router.post('/add-post',authMiddleware,async (req,res)=>{
+    try{
+        const newPost = new Post({
+            title:req.body.title,
+            body:req.body.body
+        });
+
+        await Post.create(newPost);
+        res.redirect('/dashboard')
+       
+    }catch(error){
+        console.log(error.message);
+    }
 })
 
 
